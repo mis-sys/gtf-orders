@@ -1,0 +1,156 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>GTF Treads | Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1a1a;--bg:#f3f5f8;--card:#fff;--brand:#1f5fd6;--brand-d:#15439a;--tread:#f5b301;--line:#d5dbe3;--mute:#586271;--ok:#116b2f;--bad:#a3231a}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:16px/1.45 Barlow,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+h1,h2,h3{font-family:'Barlow Condensed',sans-serif;margin:0;letter-spacing:.01em}
+header{position:sticky;top:0;z-index:4;background:var(--ink);color:#fff;border-bottom:4px solid var(--brand)}
+.hd{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}.brand{flex:1;min-width:160px}.brand h1{font-size:30px}.brand small{display:block;color:#c9d1dc;font:500 14px/1.2 Barlow,system-ui,sans-serif;letter-spacing:0}
+.who{font-size:14px;color:#c9d1dc}
+.btn{font:inherit;font-weight:600;padding:10px 18px;border:0;border-radius:8px;color:#fff;background:var(--brand);cursor:pointer;box-shadow:0 5px 0 var(--brand-d),0 8px 14px #0003;transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--brand-d),0 12px 18px #0003}.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--brand-d)}
+.btn.y{background:#2d333b;box-shadow:0 5px 0 #000,0 8px 14px #0003}.btn.r{background:#b3261e;box-shadow:0 5px 0 #7a1812,0 8px 14px #0003}.btn.s{padding:7px 12px;font-size:14px}.btn.on{background:#fff;color:var(--ink);box-shadow:0 5px 0 #9aa5b5}
+.btn:disabled{filter:grayscale(.7) opacity(.6);cursor:not-allowed;transform:none}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--tread);outline-offset:2px}
+input,select,textarea{font:inherit;padding:9px;border:1px solid var(--line);border-radius:8px;width:100%;background:#fff;color:var(--ink)}input[type=checkbox]{width:auto}
+main{max-width:1240px;margin:0 auto;padding:16px 16px 80px}.panel{background:var(--card);padding:16px;border-radius:12px;display:grid;gap:10px;border:1px solid var(--line);margin-bottom:14px}
+.auth{max-width:420px;margin:40px auto;padding:24px;gap:12px}
+nav.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}nav.tabs .btn{position:relative}.dot{background:#e53935;color:#fff;border-radius:99px;font-size:12px;padding:0 7px;margin-left:6px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}.meta{color:var(--mute);font-size:14px}.err{color:var(--bad)}.ok-t{color:var(--ok)}
+label.f{display:grid;gap:4px;font-size:13px;font-weight:600;color:var(--mute)}
+.bar{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:12px}
+.pill{border-radius:99px;padding:2px 12px;font-size:13px;font-weight:700;background:#e7e9ee;color:#333;white-space:nowrap}.pill.g{background:#d8f3e0;color:#0f6b2c}.pill.a{background:#ffe9a8;color:#7a4a00}.pill.b{background:#d6e6ff;color:#0f3f91}.pill.x{background:#fde0dd;color:#a3231a}
+.trk{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;font-size:12.5px;text-align:center}.trk i{display:block;height:8px;border-radius:4px;background:var(--line);margin-bottom:4px}.trk .d i{background:var(--brand)}.trk .d{font-weight:700}.trk .c i{background:var(--tread)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}th{color:var(--mute);font-size:12.5px}td input{padding:5px 7px;width:90px}
+.todo{border:2px solid var(--tread);background:#fffbe9;border-radius:10px;padding:10px;display:grid;gap:8px}.lock{background:#fde0dd;border-radius:8px;padding:8px 10px}
+.hl{outline:3px solid var(--tread)}details summary{cursor:pointer;font-weight:600;color:var(--brand-d)}ul.lg{margin:6px 0 0;padding-left:18px;font-size:14px;display:grid;gap:3px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}.kpi b{display:block;font:700 34px 'Barlow Condensed',sans-serif;color:var(--brand-d)}
+.bars div{display:grid;grid-template-columns:160px 1fr 40px;gap:8px;align-items:center;font-size:14px}.bars i{display:block;height:12px;border-radius:6px;background:var(--brand)}
+dialog{border:0;border-radius:12px;padding:0;max-width:min(460px,94vw);width:100%}dialog::backdrop{background:#000b}.dl{padding:18px;display:grid;gap:10px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:10px;z-index:20}
+#nd{position:fixed;right:0;top:0;bottom:0;width:min(400px,100%);background:#fff;padding:16px;box-shadow:-8px 0 30px #0005;overflow:auto;z-index:9;display:none;gap:8px;align-content:start}#nd.open{display:grid}
+.nt{border-bottom:1px solid var(--line);padding:8px 0;cursor:pointer}.nt.u{background:#fffbe9}
+@media(max-width:700px){.brand h1{font-size:26px}.bar{grid-template-columns:1fr}.trk{font-size:11px;gap:3px}.bars div{grid-template-columns:110px 1fr 36px}th,td{padding:5px 4px}}
+</style></head><body>
+<header><div class="hd"><div class="brand"><h1>GTF Treads<small>Staff dashboard</small></h1></div><span class="who" id="who"></span><button class="btn s y" id="bell" hidden aria-label="Notifications">Alerts <span class="dot" id="bn">0</span></button><button class="btn s y" id="out" hidden>Sign out</button></div></header>
+<main id="app"></main><aside id="nd" aria-label="Notifications"></aside><dialog id="dlg"></dialog><div id="toast" role="status" hidden></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const S={tok:localStorage.gtfSt||'',me:null,tab:'orders',orders:[],tix:[],stock:[],f:{o:'mine',q:'',t:'Open'},unread:0,hl:'',cfg:{}};
+const fmt=n=>Number(n).toLocaleString('en-IN',{maximumFractionDigits:2}),inr=n=>'₹'+fmt(n),view=h=>$('#app').innerHTML=h;
+const dshort=s=>s?new Date(/^\d{4}-\d\d-\d\d$/.test(s)?s+'T00:00:00':s).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+const dtime=s=>s?new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'';
+const age=s=>{const h=(Date.now()-new Date(s))/36e5;return h<1?'just now':h<48?Math.round(h)+' h ago':Math.round(h/24)+' days ago'};
+const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+async function api(a,p={}){let r,j;try{r=await fetch('/.netlify/functions/api',{method:'POST',body:JSON.stringify({action:a,token:S.tok,...p})});j=await r.json()}catch(e){throw new Error('Could not reach the server. Check your internet and try again.')}
+ if(!j.ok){if(/Session expired|access is not active/.test(j.error))setTimeout(()=>login(j.error,1),0);throw new Error(j.error)}return j.data}
+function toast(t,bad){const e=$('#toast');e.textContent=t;e.style.background=bad?'#a3231a':'#1a1a1a';e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,3500)}
+function ask(title,fields,ok){return new Promise(res=>{const d=$('#dlg');d.innerHTML=`<form method="dialog" class="dl"><h3>${esc(title)}</h3>${fields.map(f=>`<label class="f">${esc(f.l)}${f.t==='textarea'?`<textarea name="${f.n}" rows="3" maxlength="500" ${f.req?'required':''}></textarea>`:f.t==='select'?`<select name="${f.n}">${f.o.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`:`<input name="${f.n}" type="${f.t||'text'}" ${f.min?`min="${f.min}"`:''} ${f.v?`value="${esc(f.v)}"`:''} ${f.req?'required':''}>`}</label>`).join('')}
+ <div class="row"><button class="btn s y" value="x" formnovalidate>Cancel</button><button class="btn s" value="ok">${esc(ok||'Save')}</button></div></form>`;
+ d.onclose=()=>res(d.returnValue==='ok'?Object.fromEntries(fields.map(f=>[f.n,d.querySelector('[name='+f.n+']').value])):null);d.showModal()})}
+
+/* ---- sign in ---- */
+let pend='';
+async function login(msg='',expired){clearInterval(S.poll);S.tok='';S.me=null;localStorage.removeItem('gtfSt');$('#bell').hidden=$('#out').hidden=true;$('#who').textContent='';
+ try{S.cfg=await api('staffConfig')}catch(e){S.cfg={}}
+ view(`<form class="panel auth" id="lf"><h2>${pend?'Enter your code':'Staff sign in'}</h2>${pend?`<p class="meta">We sent a 6-digit code to ${esc(pend)}.</p><input name="code" inputmode="numeric" maxlength="6" placeholder="6-digit code" aria-label="6-digit code" required autofocus>`:`<input name="email" type="email" placeholder="Your work email" aria-label="Work email" required autofocus>`}
+ <button class="btn">${pend?'Verify and continue':'Send code'}</button>${pend?'<a href="#" id="bk">Use a different email</a>':''}<div class="err" role="alert">${esc(msg)}</div>${!pend&&S.cfg.googleClientId?'<div id="gbtn"></div>':''}</form>`);
+ $('#bk')&&($('#bk').onclick=e=>{e.preventDefault();pend='';login()});
+ $('#lf').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));try{if(pend){const d=await api('staffVerifyOtp',{email:pend,code:f.code});pend='';enter(d)}else{await api('staffRequestOtp',{email:f.email});pend=f.email;login()}}catch(x){login(x.message)}};
+ if(!pend&&S.cfg.googleClientId){const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=()=>{google.accounts.id.initialize({client_id:S.cfg.googleClientId,callback:async r=>{try{enter(await api('staffGoogleLogin',{credential:r.credential}))}catch(x){login(x.message)}}});google.accounts.id.renderButton($('#gbtn'),{theme:'outline',size:'large'})};document.head.appendChild(s)}}
+function enter(d){S.tok=d.token;S.me=d.me;localStorage.gtfSt=d.token;$('#bell').hidden=$('#out').hidden=false;$('#who').textContent=d.me.name+' ('+d.me.dept+')';
+ const q=new URLSearchParams(location.search);S.tab=d.me.tabs.includes('orders')?'orders':d.me.tabs[0];S.f.o='mine';if(q.get('order')){S.f.o='all';S.f.q=q.get('order')}history.replaceState(null,'',location.pathname);
+ clearInterval(S.poll);S.poll=setInterval(badge,45e3);shell()}
+$('#out').onclick=()=>{pend='';login()};$('#bell').onclick=notifs;
+const TABS={orders:'Orders',tickets:'Tickets',stock:'Stock',score:'Scoreboard',questions:'Survey questions',team:'Team'};
+function shell(){view(`<nav class="tabs" id="tb">${S.me.tabs.map(t=>`<button class="btn s ${t===S.tab?'on':''}" data-t="${t}">${TABS[t]}<span class="dot" id="b-${t}" hidden></span></button>`).join('')}<button class="btn s y" data-t="refresh">Refresh</button></nav><div id="pane"></div>`);
+ $('#tb').onclick=e=>{const t=e.target.closest('[data-t]')?.dataset.t;if(!t)return;if(t==='refresh')return tab();S.tab=t;$$('#tb [data-t]').forEach(b=>b.classList.toggle('on',b.dataset.t===t));tab()};badge();tab()}
+async function badge(){try{const b=await api('staffBadge'),was=S.unread;S.unread=b.unread;$('#bn').textContent=b.unread;$('#bell').classList.toggle('on',b.unread>0);
+ [['orders',b.todo],['tickets',b.tickets]].forEach(([t,n])=>{const e=$('#b-'+t);if(e){e.hidden=!n;e.textContent=n}});
+ if(b.unread>was&&['orders','tickets'].includes(S.tab)&&!$('#dlg').open)tab(1)}catch(e){}}
+async function notifs(){const n=$('#nd');if(n.classList.contains('open'))return n.classList.remove('open');n.classList.add('open');n.innerHTML='<p>Loading...</p>';
+ try{const L=await api('notifList');n.innerHTML=`<div class="row sp"><h3>Alerts</h3><button class="btn s y" id="nx">Close</button></div>${L.map(x=>`<div class="nt ${x.read?'':'u'}" data-r="${esc(x.ref)}"><b>${esc(x.title)}</b><div>${esc(x.msg)}</div><div class="meta">${esc(x.dept)} &middot; ${dtime(x.t)}</div></div>`).join('')||'<p class="meta">No alerts yet.</p>'}`;
+  $('#nx').onclick=()=>n.classList.remove('open');n.onclick=e=>{const r=e.target.closest('[data-r]')?.dataset.r;if(!r)return;n.classList.remove('open');if(/^T\d/.test(r)&&S.me.tabs.includes('tickets')){S.tab='tickets';S.f.t='All';S.f.q=r}else if(S.me.tabs.includes('orders')){S.tab='orders';S.f.o='all';S.f.q=r}S.hl=r;shell()};
+  await api('notifRead');S.unread=0;$('#bn').textContent=0}catch(x){n.innerHTML=`<p class="err">${esc(x.message)}</p>`}}
+async function tab(quiet){const p=$('#pane');if(!p)return;if(!quiet)p.innerHTML='<p>Loading...</p>';try{await({orders,tickets,stock,score,questions,team}[S.tab])()}catch(x){p.innerHTML=`<p class="err">${esc(x.message)}</p>`}}
+
+/* ---- orders ---- */
+const STEPS=['Placed','Sales reviewed','Accounts approved','Scheduled','Dispatched'],ACT=a=>!['locked','replan'].includes(a);
+const opill=o=>{const s=o.status;return`<span class="pill ${s==='Delivered'?'g':s==='Rejected'?'x':s==='Dispatched'?'b':'a'}">${esc(s)}</span>`};
+const otdp=o=>o.otd?`<span class="pill ${/Time|Track/.test(o.otd)?'g':'x'}">${esc(o.otd)}${o.otdScore!==''&&o.otdScore!=null?' ('+o.otdScore+')':''}</span>`:'';
+function ocard(o){const k=o.step,fin=o.status==='Dispatched'||o.status==='Delivered',a=o.act,ci=/^(Placed|Sales Reviewed)$/.test(o.status);
+ const act=[];
+ if(a.includes('review'))act.push(`<div class="todo"><b>${o.status==='Placed'?'Sales review needed':'Accounts approval needed'}</b><div class="row"><button class="btn s" data-x="ok" data-no="${esc(o.no)}">${o.status==='Placed'?'Mark reviewed':'Approve'}</button><button class="btn s r" data-x="no" data-no="${esc(o.no)}">Reject</button></div></div>`);
+ if(a.includes('schedule'))act.push(`<div class="todo"><b>Give the dispatch date to schedule production</b><div class="row"><input type="date" id="d-${esc(o.no)}" min="${todayStr()}" style="width:170px" aria-label="Dispatch date"><button class="btn s" data-x="sch" data-no="${esc(o.no)}">Schedule</button><button class="btn s r" data-x="no" data-no="${esc(o.no)}">Reject</button></div><span class="meta">This first date becomes the promised date for on-time delivery (OTD).</span></div>`);
+ if(a.includes('locked'))act.push(`<div class="lock"><b>Dispatch is locked.</b> New date ${dshort(o.plan)} (${esc(o.planReason)}) is waiting for Sales approval.</div>`);
+ if(a.includes('approveDate'))act.push(`<div class="todo"><b>Approve new dispatch date ${dshort(o.plan)}?</b><div class="meta">First promised ${dshort(o.promised)}. Reason: ${esc(o.planReason)}</div><button class="btn s" data-x="appr" data-no="${esc(o.no)}">Approve new date</button></div>`);
+ if(a.includes('deliver'))act.push(`<div class="todo"><b>Fully dispatched.</b> Mark delivered once the customer receives it. The customer then gets the feedback link.<div><button class="btn s" data-x="dlv" data-no="${esc(o.no)}">Mark delivered</button></div></div>`);
+ return`<section class="panel${S.hl===o.no?' hl':''}" id="o-${esc(o.no)}"><div class="row sp"><h3>${esc(o.no)}</h3><div class="row">${opill(o)}${otdp(o)}</div></div>
+ <div class="meta"><b>${esc(o.company)}</b> &middot; ${esc(o.customer)} &middot; <a href="tel:${esc(o.phone)}">${esc(o.phone)}</a> &middot; ${dshort(o.created)} &middot; ${inr(o.total)} &middot; ${esc(o.packs)} packs, ${esc(o.qty)}</div>
+ ${o.status==='Rejected'?'':`<div class="trk">${STEPS.map((s,j)=>`<div class="${j<k?'d':j===k&&!fin?'d c':''}"><i></i>${s}</div>`).join('')}</div>`}
+ <div class="meta">${o.promised?'Promised '+dshort(o.promised):''}${o.plan&&o.plan!==o.promised?' &middot; Now planned '+dshort(o.plan):''}${o.holder&&!fin&&o.status!=='Rejected'?' &middot; With: <b>'+esc(o.holder)+'</b>':''}</div>
+ <table><thead><tr><th>Product</th><th>Ordered</th><th>Sent</th><th>Rate</th><th>Amount</th>${a.includes('dispatch')?'<th>Dispatch now</th>':''}</tr></thead><tbody>${o.items.map(i=>`<tr><td><b>${esc(i.pattern)}</b> ${esc(i.size)}</td><td>${fmt(i.ordered)} ${esc(i.packType)}</td><td>${fmt(i.sent)}</td><td>${inr(i.rate)}</td><td>${inr(i.line)}</td>${a.includes('dispatch')?`<td>${i.sent<i.ordered?`<div class="row"><input type="number" min="1" max="${i.ordered-i.sent}" value="${i.ordered-i.sent}" id="q-${esc(i.id)}" aria-label="Packs to dispatch"><button class="btn s" data-x="dsp" data-item="${esc(i.id)}">Dispatch</button></div>`:'<span class="ok-t">Done</span>'}</td>`:''}</tr>`).join('')}</tbody></table>
+ ${act.join('')}${a.includes('replan')?`<div><button class="btn s y" data-x="rep" data-no="${esc(o.no)}">Change dispatch date</button></div>`:''}
+ <details><summary>History</summary><ul class="lg">${o.log.map(e=>`<li><b>${esc(e.a)}</b> by ${esc(e.by)} <span class="meta">${dtime(e.t)}</span>${e.n?'<div class="meta">'+esc(e.n)+'</div>':''}</li>`).join('')}</ul></details></section>`}
+async function orders(){S.orders=await api('staffOrders');const draw=()=>{const f=S.f,q=f.q.toLowerCase().trim();
+ const L=S.orders.filter(o=>(f.o==='all'||(f.o==='mine'&&o.act.some(ACT))||(f.o==='open'&&!/^(Delivered|Rejected)$/.test(o.status))||(f.o==='done'&&/^(Delivered|Rejected)$/.test(o.status)))&&(!q||[o.no,o.company,o.customer,...o.items.map(i=>i.pattern)].join(' ').toLowerCase().includes(q)));
+ $('#pane').innerHTML=`<div class="bar"><label class="f">Search<input id="oq" type="search" value="${esc(f.q)}" placeholder="Order no, company, customer or pattern"></label><label class="f">Show<select id="of">${[['mine','Needs my action'],['open','All open'],['done','Delivered / rejected'],['all','Everything']].map(([v,t])=>`<option value="${v}"${f.o===v?' selected':''}>${t}</option>`).join('')}</select></label></div>
+ <p class="meta">${L.length} order${L.length===1?'':'s'}</p>${L.map(ocard).join('')||'<div class="panel">Nothing here right now.</div>'}`;
+ $('#oq').oninput=e=>{f.q=e.target.value;const p=e.target.selectionStart;draw();$('#oq').focus();$('#oq').setSelectionRange(p,p)};$('#of').onchange=e=>{f.o=e.target.value;draw()};
+ if(S.hl){const h=$('#o-'+CSS.escape(S.hl));h&&h.scrollIntoView({block:'center'});S.hl=''}};draw();
+ $('#pane').onclick=async e=>{const b=e.target.closest('[data-x]');if(!b)return;const x=b.dataset.x,no=b.dataset.no;b.disabled=true;
+  try{let m='Done';
+   if(x==='ok')await api('stageAdvance',{orderNumber:no,decision:'approve'});
+   else if(x==='sch'){const d=$('#d-'+CSS.escape(no)).value;if(!d){b.disabled=false;return toast('Choose the dispatch date first.',1)}await api('stageAdvance',{orderNumber:no,decision:'approve',date:d})}
+   else if(x==='no'){const r=await ask('Reject '+no,[{n:'note',l:'Reason (the customer will see this)',t:'textarea',req:1}],'Reject order');if(!r){b.disabled=false;return}await api('stageAdvance',{orderNumber:no,decision:'reject',note:r.note});m='Order rejected'}
+   else if(x==='rep'){const r=await ask('Change dispatch date for '+no,[{n:'date',l:'New dispatch date',t:'date',min:todayStr(),req:1},{n:'reason',l:'Reason',t:'textarea',req:1}],'Request change');if(!r){b.disabled=false;return}await api('setPlanDate',{orderNumber:no,date:r.date,reason:r.reason});m='Sent to Sales for approval. Dispatch is locked until then.'}
+   else if(x==='appr')await api('approvePlanDate',{orderNumber:no});
+   else if(x==='dsp')await api('dispatch',{itemId:b.dataset.item,qty:+$('#q-'+CSS.escape(b.dataset.item)).value});
+   else if(x==='dlv')await api('markDelivered',{orderNumber:no});
+   toast(m);badge();tab(1)}catch(err){toast(err.message,1);b.disabled=false}}}
+
+/* ---- tickets ---- */
+async function tickets(){S.tix=await api('staffTickets');const draw=()=>{const f=S.f,q=f.q.toLowerCase().trim(),L=S.tix.filter(t=>(f.t==='All'||t.status===f.t)&&(!q||[t.id,t.company,t.customer,t.msg,t.order].join(' ').toLowerCase().includes(q)));
+ $('#pane').innerHTML=`<div class="bar"><label class="f">Search<input id="tq" type="search" value="${esc(f.q)}" placeholder="Ticket no, company, order or words"></label><label class="f">Status<select id="tf">${['Open','In Progress','Resolved','Closed','All'].map(v=>`<option${f.t===v?' selected':''}>${v}</option>`).join('')}</select></label></div><p class="meta">${L.length} ticket${L.length===1?'':'s'}</p>
+ ${L.map(t=>`<section class="panel${S.hl===t.id?' hl':''}" id="t-${esc(t.id)}"><div class="row sp"><h3>${esc(t.id)}</h3><div class="row"><span class="pill ${t.status==='Open'?'a':t.status==='In Progress'?'b':'g'}">${esc(t.status)}</span><span class="pill">${esc(t.dept)}</span></div></div>
+ <div class="meta"><b>${esc(t.company)}</b> &middot; ${esc(t.customer)} &middot; <a href="tel:${esc(t.phone)}">${esc(t.phone)}</a> &middot; <a href="mailto:${esc(t.email)}">${esc(t.email)}</a></div>
+ <div class="meta">${esc(t.cat)}${t.order?' &middot; Order '+esc(t.order):''} &middot; ${age(t.created)}</div><div>${esc(t.msg)}</div>
+ ${t.files.length||t.voice?`<div class="row">${t.files.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">Attachment ${i+1}</a>`).join(' ')}${t.voice?`<a href="${esc(t.voice)}" target="_blank" rel="noopener">&#9658; Play voice note</a>`:''}</div>`:''}
+ ${t.notes?`<div class="meta" style="white-space:pre-line">${esc(t.notes)}</div>`:''}
+ ${/Resolved|Closed/.test(t.status)?'':`<div class="row"><button class="btn s y" data-k="prog" data-id="${esc(t.id)}">Start work</button><button class="btn s" data-k="res" data-id="${esc(t.id)}">Resolve</button><button class="btn s y" data-k="mv" data-id="${esc(t.id)}">Move to another team</button></div>`}</section>`).join('')||'<div class="panel">No tickets here.</div>'}`;
+ $('#tq').oninput=e=>{f.q=e.target.value;const p=e.target.selectionStart;draw();$('#tq').focus();$('#tq').setSelectionRange(p,p)};$('#tf').onchange=e=>{f.t=e.target.value;draw()};
+ if(S.hl){const h=$('#t-'+CSS.escape(S.hl));h&&h.scrollIntoView({block:'center'});S.hl=''}};draw();
+ $('#pane').onclick=async e=>{const b=e.target.closest('[data-k]');if(!b)return;const id=b.dataset.id,t=S.tix.find(x=>x.id===id);b.disabled=true;
+  try{if(b.dataset.k==='prog')await api('ticketUpdate',{id,status:'In Progress'});
+   else if(b.dataset.k==='res'){const r=await ask('Resolve '+id,[{n:'note',l:'What was done? (emailed to the customer)',t:'textarea',req:1}],'Mark resolved');if(!r){b.disabled=false;return}await api('ticketUpdate',{id,status:'Resolved',note:r.note})}
+   else{const r=await ask('Move '+id,[{n:'dept',l:'Department',t:'select',o:t.depts.filter(d=>d.toLowerCase()!==t.dept.toLowerCase())},{n:'note',l:'Note for them',t:'textarea'}],'Move');if(!r){b.disabled=false;return}await api('ticketReassign',{id,dept:r.dept,note:r.note})}
+   toast('Saved');badge();tab(1)}catch(x){toast(x.message,1);b.disabled=false}}}
+
+/* ---- stock ---- */
+async function stock(){S.stock=await api('staffStock');const edit=S.me.admin||/^inventory$/i.test(S.me.dept),draw=()=>{const q=(S.f.sq||'').toLowerCase(),L=S.stock.filter(p=>!q||[p.code,p.pattern,p.size,p.grade].join(' ').toLowerCase().includes(q)).slice(0,200);
+ $('#pane').innerHTML=`<label class="f" style="max-width:420px">Search<input id="sq" type="search" value="${esc(S.f.sq||'')}" placeholder="Pattern, size, grade or code"></label><p class="meta">${edit?'Change the closing quantity and press Save. Units and packs recalculate from your sheet formulas.':'View only. Inventory updates stock.'} Showing ${L.length} of ${S.stock.length}.</p>
+ <div class="panel" style="overflow:auto"><table><thead><tr><th>Pattern</th><th>Size</th><th>Grade</th><th>Closing qty</th><th>Units</th><th>Packs</th><th>Status</th></tr></thead><tbody>${L.map(p=>`<tr><td><b>${esc(p.pattern)}</b></td><td>${esc(p.size)}</td><td>${esc(p.grade)}</td><td>${edit?`<div class="row"><input type="number" min="0" step="0.01" value="${esc(p.qty)}" id="s-${esc(p.code)}" aria-label="Closing quantity ${esc(p.pattern)}"><span class="meta">${esc(p.uom)}</span><button class="btn s" data-c="${esc(p.code)}">Save</button></div>`:fmt(p.qty)+' '+esc(p.uom)}</td><td>${fmt(p.units)}</td><td>${fmt(p.packs)} ${esc(p.packType)}</td><td><span class="pill ${p.state==='in'?'g':p.state==='soon'?'a':''}">${p.state==='in'?'In stock':p.state==='soon'?'Coming soon':'Out of stock'}</span></td></tr>`).join('')}</tbody></table></div>`;
+ $('#sq').oninput=e=>{S.f.sq=e.target.value;const p=e.target.selectionStart;draw();$('#sq').focus();$('#sq').setSelectionRange(p,p)};
+ $('#pane').onclick=async e=>{const c=e.target.dataset.c;if(!c)return;e.target.disabled=true;try{await api('stockUpdate',{code:c,qty:+$('#s-'+CSS.escape(c)).value});toast('Stock saved. Refresh to see the recalculated packs.')}catch(x){toast(x.message,1)}e.target.disabled=false}};draw()}
+
+/* ---- scoreboard ---- */
+async function score(){const d=await api('scoreboard'),mx=Math.max(1,...Object.values(d.byStatus));
+ $('#pane').innerHTML=`<div class="kpis"><div class="kpi">On-time dispatch<b>${d.onTimePct==null?'-':d.onTimePct+'%'}</b><span class="meta">${d.dispatched} dispatched orders</span></div><div class="kpi">Average OTD score<b>${d.otdAvg==null?'-':d.otdAvg}</b><span class="meta">out of 100</span></div><div class="kpi">Customer rating<b>${d.rating==null?'-':d.rating+' / 5'}</b><span class="meta">${d.ratings} responses</span></div><div class="kpi">Open tickets<b>${d.ticketsOpen}</b><span class="meta">of ${d.ticketsTotal} total</span></div><div class="kpi">All orders<b>${d.orders}</b></div></div>
+ <div class="panel"><h3>Orders by stage</h3><div class="bars">${Object.keys(d.byStatus).map(k=>`<div><span>${esc(k)}</span><i style="width:${Math.round(100*d.byStatus[k]/mx)}%"></i><b>${d.byStatus[k]}</b></div>`).join('')}</div></div>
+ <div class="panel"><h3>Delayed against promise</h3>${d.delayed.map(o=>`<div>${esc(o.no)} &middot; ${esc(o.company)} &middot; promised ${dshort(o.promised)}, now ${dshort(o.plan)}</div>`).join('')||'<span class="meta">No delayed orders.</span>'}</div>`}
+
+/* ---- survey questions ---- */
+async function questions(){const Q=await api('getQuestions');const draw=()=>{$('#pane').innerHTML=`<div class="panel" style="max-width:640px"><h3>Questions customers answer after delivery</h3><p class="meta">The star rating is always asked. Add up to 10 questions of your own.</p>${Q.map((q,i)=>`<div class="row"><input data-q="${i}" value="${esc(q.text)}" maxlength="200" aria-label="Question ${i+1}" style="flex:1"><button class="btn s y" data-d="${i}" aria-label="Remove question ${i+1}">&times;</button></div>`).join('')}<div class="row"><button class="btn s y" id="qa">Add question</button><button class="btn s" id="qs">Save questions</button></div></div>`;
+ const sync=()=>$$('[data-q]').forEach(i=>Q[+i.dataset.q].text=i.value);$('#qa').onclick=()=>{sync();if(Q.length<10)Q.push({text:''});draw()};$('#pane').onclick=e=>{const d=e.target.dataset.d;if(d!=null){sync();Q.splice(+d,1);draw()}};
+ $('#qs').onclick=async()=>{sync();try{await api('saveQuestions',{questions:Q.filter(q=>q.text.trim())});toast('Saved. New surveys use these questions.')}catch(x){toast(x.message,1)}}};draw()}
+
+/* ---- team (admin) ---- */
+async function team(){let d=await api('deptList');const draw=()=>{$('#pane').innerHTML=`<div class="panel"><h3>Team and access</h3><p class="meta">Each person signs in with their email code. Their department decides what they can do. Admin sees and can do everything.</p><div style="overflow:auto"><table><thead><tr><th>Name</th><th>Department</th><th>Email</th><th>Phone</th><th>Access</th><th></th></tr></thead><tbody>${d.staff.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.dept)}</td><td>${esc(s.email)}</td><td>${esc(s.phone)}</td><td><span class="pill ${s.admin?'b':''}">${s.admin?'Admin':'Member'}</span> ${s.active?'':'<span class="pill x">Off</span>'}</td><td><div class="row"><button class="btn s y" data-e="${esc(s.email)}">Edit</button><button class="btn s r" data-r="${esc(s.email)}">Remove</button></div></td></tr>`).join('')}</tbody></table></div>
+ <button class="btn s" id="tn">Add team member</button></div>`;
+ const form=async s=>{s=s||{dept:'Sales',name:'',email:'',phone:'',wa:'',admin:false,active:true};const r=await ask(s.email?'Edit '+s.name:'Add team member',[{n:'name',l:'Name',v:s.name,req:1},{n:'email',l:'Work email',t:'email',v:s.email,req:1},{n:'dept',l:'Department',t:'select',o:[s.dept,...d.depts.filter(x=>x!==s.dept),'Management'].filter((x,i,a)=>x&&a.indexOf(x)===i)},{n:'phone',l:'Phone',v:s.phone},{n:'wa',l:'WhatsApp (optional)',v:s.wa},{n:'access',l:'Access',t:'select',o:s.admin?['Admin','Member']:['Member','Admin']},{n:'active',l:'Active',t:'select',o:s.active?['Yes','No']:['No','Yes']}],'Save');
+  if(!r)return;try{await api('deptUpsert',{name:r.name,email:r.email,dept:r.dept,phone:r.phone,wa:r.wa,admin:r.access==='Admin',active:r.active==='Yes'});toast('Saved');d=await api('deptList');draw()}catch(x){toast(x.message,1)}};
+ $('#tn').onclick=()=>form();$('#pane').onclick=async e=>{const em=e.target.dataset.e,rm=e.target.dataset.r;if(em)form(d.staff.find(s=>s.email===em));if(rm&&confirm('Remove '+rm+' from the team?'))try{await api('deptRemove',{email:rm});toast('Removed');d=await api('deptList');draw()}catch(x){toast(x.message,1)}}};draw()}
+S.tok?api('staffMe').then(me=>enter({token:S.tok,me})).catch(()=>login()):login();
+</script></body></html>
