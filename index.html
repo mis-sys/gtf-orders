@@ -1,0 +1,79 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GTF Tyres | Tread Rubber Orders</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16201b;--bg:#eef1ef;--card:#fff;--green:#1d5a3a;--tread:#f2b705;--line:#d3dad6;--mute:#5c6a63}
+*{box-sizing:border-box}body{margin:0;font:16px/1.45 Barlow,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+h1,h2,h3{font-family:'Barlow Condensed',sans-serif;margin:0;letter-spacing:.01em}
+header{background:var(--ink);color:#fff;padding:12px 20px;display:flex;gap:16px;align-items:center;border-bottom:6px solid var(--tread);background-image:repeating-linear-gradient(115deg,transparent 0 14px,#ffffff0d 14px 18px)}
+header h1{font-size:28px;flex:1}header button{background:none;color:#fff;border:1px solid #ffffff55}
+button{font:inherit;font-weight:500;padding:9px 16px;border-radius:6px;border:0;background:var(--green);color:#fff;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}button.alt{background:var(--tread);color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--tread);outline-offset:2px}
+input,select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:6px;width:100%;background:#fff}
+main{max-width:1200px;margin:0 auto;padding:20px}.auth{max-width:440px;margin:40px auto;background:var(--card);padding:24px;border-radius:8px;display:grid;gap:12px}
+.bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}.bar input{flex:2;min-width:180px}.bar select{flex:1;min-width:140px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column}
+.card.sel{border-color:var(--green);box-shadow:0 0 0 2px var(--green)}
+.img{position:relative;aspect-ratio:4/3;background:#dfe5e1 center/cover}.play{position:absolute;right:10px;bottom:10px;width:44px;height:44px;border-radius:50%;padding:0;background:var(--tread);color:var(--ink);font-size:18px}
+.body{padding:12px;display:grid;gap:6px;flex:1}.body h3{font-size:22px}.meta{color:var(--mute);font-size:14px}
+.price{font-family:'Barlow Condensed';font-size:26px;font-weight:700;color:var(--green)}.tag{font-size:13px;padding:2px 8px;border-radius:99px;background:#e1ece5;justify-self:start}.tag.soon{background:#fbeec0}
+.row{display:flex;gap:8px;align-items:center}.row input[type=number]{width:80px}
+dialog{border:0;border-radius:8px;padding:0;max-width:min(720px,94vw);width:100%}dialog::backdrop{background:#000a}
+dialog iframe,dialog video{width:100%;aspect-ratio:16/9;border:0;display:block;background:#000}
+#drawer{position:fixed;right:0;top:0;bottom:0;width:min(400px,100%);background:#fff;padding:18px;display:none;flex-direction:column;gap:10px;box-shadow:-8px 0 30px #0004;overflow:auto}
+#drawer.open{display:flex}.line{display:grid;grid-template-columns:1fr 70px 28px;gap:8px;align-items:center;font-size:14px}
+.err{color:#a3231a}.fab{position:fixed;right:18px;bottom:18px}
+</style></head><body>
+<header><h1>GTF Tyres</h1><span id="who"></span><button id="out" hidden>Sign out</button></header>
+<main id="app"></main>
+<aside id="drawer" aria-label="Cart"></aside>
+<dialog id="vid"><div class="row" style="justify-content:flex-end;padding:8px"><button class="alt" onclick="vid.close()">Close</button></div><div id="vbox"></div></dialog>
+<script>
+const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const S={tok:localStorage.gtfTok||'',name:localStorage.gtfName||'',role:localStorage.gtfRole||'',items:[],cart:{},q:'',size:'',uid:'',mode:'signin'};
+async function api(action,p={}){const r=await fetch('/.netlify/functions/api',{method:'POST',body:JSON.stringify({action,token:S.tok,...p})});const j=await r.json();if(!j.ok)throw new Error(j.error);return j.data}
+function view(h){$('#app').innerHTML=h}
+function auth(msg=''){
+ $('#out').hidden=true;$('#who').textContent='';const reg=S.mode==='register',otp=!!S.uid;
+ view(`<form class="auth" id="af"><h2>${otp?'Enter your code':reg?'Create your account':'Sign in'}</h2>
+ ${otp?`<input name="code" inputmode="numeric" maxlength="6" placeholder="6-digit code" required autofocus>`:`
+ ${reg?`<input name="name" placeholder="Your name" required><input name="company" placeholder="Company name" required><input name="mobile" placeholder="Mobile number" required><input name="email" type="email" placeholder="Email" required><input name="whatsapp" placeholder="WhatsApp number" required>`:''}
+ <select name="channel"><option value="mobile">Send code to my mobile</option><option value="email">Send code to my email</option><option value="whatsapp">Send code to my WhatsApp</option></select>
+ ${reg?'':'<input name="to" placeholder="Registered mobile, email or WhatsApp" required>'}`}
+ <button>${otp?'Verify and continue':'Send code'}</button><div class="err">${esc(msg)}</div>
+ ${otp?'':`<a href="#" id="sw">${reg?'I already have an account':'New here? Create an account'}</a>`}</form>`);
+ $('#sw')&&($('#sw').onclick=e=>{e.preventDefault();S.mode=reg?'signin':'register';auth()});
+ $('#af').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));try{
+  if(otp){const d=await api('verifyOtp',{userId:S.uid,code:f.code});Object.assign(S,{tok:d.token,name:d.name,role:d.role});localStorage.gtfTok=d.token;localStorage.gtfName=d.name;localStorage.gtfRole=d.role;S.uid='';load()}
+  else{if(reg)f.to=f[{mobile:'mobile',email:'email',whatsapp:'whatsapp'}[f.channel]];const d=await api('requestOtp',{...f,register:reg});S.uid=d.userId;auth()}
+ }catch(x){auth(x.message)}}}
+const thumb=u=>{const m=/\/d\/([\w-]+)/.exec(u||'')||/id=([\w-]+)/.exec(u||'');return m?`https://drive.google.com/thumbnail?id=${m[1]}&sz=w600`:(u||'')};
+function play(u){const y=/(?:shorts\/|v=|youtu\.be\/)([\w-]{11})/.exec(u||'');$('#vbox').innerHTML=y?`<iframe src="https://www.youtube.com/embed/${y[1]}?autoplay=1&rel=0" allow="autoplay;encrypted-media;fullscreen" allowfullscreen></iframe>`:`<video src="${esc(u)}" controls autoplay playsinline></video>`;vid.showModal()}
+vid.addEventListener('close',()=>$('#vbox').innerHTML='');
+async function load(){
+ $('#out').hidden=false;$('#who').textContent=S.name+' ('+S.role+')';view('<p>Loading catalogue...</p>');
+ try{const c=JSON.parse(localStorage.gtfCat||'null');if(c&&c.t>Date.now()-6e5&&c.k===S.tok)S.items=c.d;else{S.items=await api('catalogue');localStorage.gtfCat=JSON.stringify({t:Date.now(),k:S.tok,d:S.items})}}
+ catch(x){S.tok='';localStorage.clear();return auth(x.message)}
+ shell();draw()}
+function shell(){const sz=[...new Set(S.items.map(i=>i.size).filter(Boolean))].sort();
+ view(`<div class="bar"><input id="q" type="search" placeholder="Search code, pattern or size"><select id="sz"><option value="">All sizes</option>${sz.map(s=>`<option>${esc(s)}</option>`).join('')}</select></div><div class="grid" id="g"></div><button class="fab alt" id="cb"></button>`);
+ $('#q').oninput=e=>{S.q=e.target.value.toLowerCase();draw()};$('#sz').onchange=e=>{S.size=e.target.value;draw()};$('#cb').onclick=()=>{$('#drawer').classList.add('open');cart()}}
+function draw(){const L=S.items.filter(i=>(!S.size||i.size==S.size)&&(!S.q||[i.code,i.pattern,i.size].join(' ').toLowerCase().includes(S.q)));
+ $('#g').innerHTML=L.slice(0,120).map(i=>{const ok=i.status==='Avaliable'||i.status==='Available',n=S.cart[i.code];return `<article class="card ${n?'sel':''}"><div class="img" style="background-image:url('${esc(thumb(i.img))}')">${i.video?`<button class="play" aria-label="Play video for ${esc(i.pattern)}" data-v="${esc(i.code)}">&#9654;</button>`:''}</div>
+ <div class="body"><h3>${esc(i.pattern)}</h3><div class="meta">${esc(i.size)} &middot; ${esc(i.width)} mm &middot; ${esc(i.grade)}</div><span class="tag ${ok?'':'soon'}">${ok?'Available':'Coming soon'}</span>
+ <div class="meta">In stock: ${esc(i.stock||'-')}</div>${i.price?`<div class="price">&#8377;${esc(i.price)}</div>`:'<div class="meta">Price on request</div>'}
+ <div class="row"><input type="number" min="1" value="${n||1}" id="n-${esc(i.code)}" aria-label="Quantity"><button data-a="${esc(i.code)}" ${ok?'':'disabled'}>${n?'Update':'Add to cart'}</button></div></div></article>`}).join('')||'<p>No products match. Clear the search or size filter.</p>';
+ $('#g').onclick=e=>{const v=e.target.dataset.v,a=e.target.dataset.a;if(v)play(S.items.find(i=>i.code==v).video);if(a){S.cart[a]=Math.max(1,+$('[id="n-'+a+'"]').value|0);draw();cart(true)}};cart(true)}
+function cart(quiet){const ks=Object.keys(S.cart),P=Object.fromEntries(S.items.map(i=>[i.code,i]));let tot=0;
+ ks.forEach(k=>tot+=S.cart[k]*(+P[k].price||0));$('#cb').textContent=`Cart (${ks.length})`;if(quiet&&!$('#drawer').classList.contains('open'))return;
+ $('#drawer').innerHTML=`<div class="row"><h2 style="flex:1">Your order</h2><button class="alt" id="cx">Close</button></div>${ks.map(k=>`<div class="line"><span>${esc(P[k].pattern)}<br><small>${esc(P[k].size)}</small></span><input type="number" min="1" value="${S.cart[k]}" data-q="${esc(k)}"><button data-r="${esc(k)}" aria-label="Remove">&times;</button></div>`).join('')||'<p>Tick products and add quantities to start an order.</p>'}
+ <strong>Estimated total &#8377;${tot.toLocaleString('en-IN')}</strong><label><input type="checkbox" id="ag" style="width:auto"> All prices are exclusive of transport and forwarding charges. These are ex-factory charges and must be paid by the customer on their own basis.</label>
+ <button id="go" disabled>Place order</button><div id="om"></div>`;
+ $('#cx').onclick=()=>$('#drawer').classList.remove('open');$('#ag').onchange=e=>$('#go').disabled=!e.target.checked||!ks.length;
+ $('#drawer').onchange=e=>{if(e.target.dataset.q){S.cart[e.target.dataset.q]=Math.max(1,+e.target.value|0);cart()}};$('#drawer').onclick=e=>{if(e.target.dataset.r){delete S.cart[e.target.dataset.r];draw();cart()}};
+ $('#go').onclick=async()=>{try{$('#go').disabled=true;const d=await api('placeOrder',{items:ks.map(k=>({code:k,qty:S.cart[k]})),agreed:$('#ag').checked});S.cart={};draw();$('#drawer').innerHTML=`<h2>Order placed</h2><p>Order number <strong>${esc(d.orderNumber)}</strong>. We will confirm dispatch dates shortly.</p><button id="cx">Close</button>`;$('#cx').onclick=()=>$('#drawer').classList.remove('open')}catch(x){$('#om').innerHTML=`<span class="err">${esc(x.message)}</span>`;$('#go').disabled=false}}}
+$('#out').onclick=()=>{localStorage.clear();location.reload()};
+S.tok?load():auth();
+</script></body></html>
