@@ -88,6 +88,8 @@ label.chk{display:flex;gap:8px;align-items:flex-start;font-size:14px}label.chk i
 .tk{margin-bottom:12px;gap:6px}.rp{background:#eef7f0;border-left:4px solid #2e7d32;padding:8px 10px;border-radius:6px;font-size:14px}
 .fl{display:inline-flex;gap:6px;align-items:center;background:#eef2f8;border-radius:99px;padding:3px 6px 3px 12px;font-size:13px}.fl button{border:0;background:none;font-size:18px;cursor:pointer;line-height:1}
 audio{max-width:100%}@media(max-width:560px){.trk{font-size:11px;gap:3px}}
+/* Loading spinner */
+.ld{display:flex;gap:12px;align-items:center;padding:30px 8px;color:var(--mute)}.sp{flex:none;width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:820px){.bar{grid-template-columns:1fr 1fr}.bar>:first-child{grid-column:1/-1}.top div{justify-content:center}.brand h1{font-size:28px}}
 @media(max-width:560px){.top div{gap:2px 16px;padding:5px 12px}.top .n{display:none}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -107,7 +109,11 @@ audio{max-width:100%}@media(max-width:560px){.trk{font-size:11px;gap:3px}}
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const S={tok:localStorage.gtfTok||'',name:localStorage.gtfName||'',role:localStorage.gtfRole||'',items:[],cart:{},orders:[],view:'shop',q:'',group:'',grade:'',size:'',shown:48,uid:'',mode:'signin',poll:0,fb:{kind:'order',r:0},sup:{files:[],voice:null,order:''},deep:Object.fromEntries(new URLSearchParams(location.search)),fbOrder:''};
 const fmt=n=>Number(n).toLocaleString('en-IN',{maximumFractionDigits:2}),inr=n=>'\u20B9'+fmt(n);
-async function api(a,p={}){const r=await fetch('/.netlify/functions/api',{method:'POST',body:JSON.stringify({action:a,token:S.tok,...p})});const j=await r.json();if(!j.ok)throw new Error(j.error);return j.data}
+const READ=/^(catalogue|myOrders|myTickets|getQuestions)$/;
+async function api(a,p={}){for(let t=0;;t++){let j;try{const c=new AbortController(),to=setTimeout(()=>c.abort(),40000);const r=await fetch('/.netlify/functions/api',{method:'POST',body:JSON.stringify({action:a,token:S.tok,...p}),signal:c.signal});clearTimeout(to);j=await r.json()}
+ catch(e){if(t<1&&READ.test(a))continue;throw new Error('The server did not respond. Please check your internet and try again.')}
+ if(!j.ok){if(t<1&&READ.test(a)&&/web page|unreachable/.test(j.error))continue;throw new Error(j.error)}return j.data}}
+const ld=t=>{view('<div class="ld"><span class="sp"></span><span id="ldm">'+t+'</span></div>');setTimeout(()=>{const e=$('#ldm');if(e)e.textContent+=' The server is taking longer than usual, please wait...'},7000)};
 const view=h=>$('#app').innerHTML=h;
 const round=n=>Math.round(n*100)/100;
 /* Order maths. The customer enters PACKS; units = packs x Units Per Pack (col M); quantity = units x Unit Weight (col K). */
@@ -127,13 +133,17 @@ function auth(msg=''){clearInterval(S.poll);$('#nav').hidden=true;const reg=S.mo
  <select name="channel" aria-label="Where to send the code"><option value="email">Send code to my email</option><option value="mobile">Send code to my mobile</option><option value="whatsapp">Send code to my WhatsApp</option></select>${reg?'':'<input name="to" placeholder="Registered email, mobile or WhatsApp" required>'}`}
  <button class="btn">${otp?'Verify and continue':'Send code'}</button><div class="err" role="alert">${esc(msg)}</div>${otp?'':`<a href="#" id="sw">${reg?'I already have an account':'New here? Create an account'}</a>`}</form>`);
  $('#sw')&&($('#sw').onclick=e=>{e.preventDefault();S.mode=reg?'signin':'register';auth()});
- $('#af').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));try{
+ $('#af').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));const bt=e.target.querySelector('button'),em=e.target.querySelector('.err');bt.disabled=true;bt.textContent='Please wait...';em.style.color='#586271';em.textContent=otp?'Checking your code...':'Sending your code. This can take up to 10 seconds, please do not press again.';try{
   if(otp){const d=await api('verifyOtp',{userId:S.uid,code:f.code});Object.assign(S,{tok:d.token,name:d.name,role:d.role});localStorage.gtfTok=d.token;localStorage.gtfName=d.name;localStorage.gtfRole=d.role;S.uid='';load()}
   else{if(reg)f.to=f[f.channel];const d=await api('requestOtp',{...f,register:reg});S.uid=d.userId;auth()}}catch(x){auth(x.message)}}}
-async function load(){$('#nav').hidden=false;$('#who').textContent=S.name+' ('+S.role+')';view('<p>Loading catalogue...</p>');
- try{const c=JSON.parse(localStorage.gtfCat2||'null');if(c&&c.k===S.tok&&c.t>Date.now()-12e4)S.items=c.d;else{S.items=await api('catalogue');localStorage.gtfCat2=JSON.stringify({t:Date.now(),k:S.tok,d:S.items})}}
- catch(x){S.tok='';localStorage.clear();return auth(x.message)}
- const d=S.deep;history.replaceState(null,'',location.pathname);if(d.order&&d.survey){S.fbOrder=d.order;S.deep={};go('fb')}else if(d.order)go('orders');else go('shop')}
+async function load(){$('#nav').hidden=false;$('#who').textContent=S.name+' ('+S.role+')';
+ let c=null;try{c=JSON.parse(localStorage.gtfCat2||'null')}catch(e){}const have=!!(c&&c.k===S.tok&&c.d);let started=false;
+ const start=()=>{if(started)return;started=true;const d=S.deep;history.replaceState(null,'',location.pathname);if(d.order&&d.survey){S.fbOrder=d.order;S.deep={};go('fb')}else if(d.order)go('orders');else go('shop')};
+ if(have){S.items=c.d;start()}else ld('Loading the catalogue...');
+ if(have&&c.t>Date.now()-12e4)return;
+ try{const d=await api('catalogue');S.items=d;localStorage.gtfCat2=JSON.stringify({t:Date.now(),k:S.tok,d:d});if(!started)start();else if(S.view==='shop')draw()}
+ catch(x){if(/Session expired|not verified/.test(x.message)){S.tok='';localStorage.clear();return auth(x.message)}
+  if(!started)view(`<section class="panel"><h2>Could not load</h2><p class="err">${esc(x.message)}</p><button class="btn" id="rt">Try again</button></section>`),$('#rt').onclick=load}}
 function go(v){S.view=v;clearInterval(S.poll);document.querySelectorAll('#nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));$('#cb')&&0;
  if(v==='shop')shop();else if(v==='orders')orders();else if(v==='support')support();else feedback()}
 $('#nav').onclick=e=>e.target.dataset.v&&go(e.target.dataset.v);$('#out').onclick=()=>{localStorage.clear();location.reload()};
@@ -182,7 +192,7 @@ function ocard(o){const k=o.step,final=o.status==='Dispatched'||o.status==='Deli
  ${o.items.map(i=>`<div class="meta"><b>${esc(i.pattern)}</b> ${esc(i.size)}: ${fmt(i.sent||0)} of ${fmt(i.ordered)} ${esc(i.packType)} dispatched</div>`).join('')}
  ${o.timeline&&o.timeline.length>1?`<details><summary>History</summary><ul class="tl">${o.timeline.map(e=>`<li><b>${esc(e.a)}</b> <span class="meta">${dtime(e.t)}</span></li>`).join('')}</ul></details>`:''}
  <div class="row" style="flex-wrap:wrap"><button class="btn s y" data-q="${esc(o.no)}">Ask about this order</button>${o.status==='Delivered'?(o.feedbackDone?'<span class="ok-t">Feedback received. Thank you.</span>':`<button class="btn s" data-f="${esc(o.no)}">Give feedback</button>`):''}</div></section>`}
-async function orders(){view('<p>Loading your orders...</p>');let last='';const paint=async()=>{try{S.orders=await api('myOrders')}catch(x){return view(`<p class="err">${esc(x.message)}</p>`)}if(S.view!=='orders')return;
+async function orders(){ld('Loading your orders...');let last='';const paint=async()=>{try{S.orders=await api('myOrders')}catch(x){return view(`<p class="err">${esc(x.message)}</p>`)}if(S.view!=='orders')return;
  const sig=JSON.stringify(S.orders);if(sig===last)return;last=sig;
  view(`<h2>My Orders</h2>${S.orders.map(ocard).join('')||'<p>You have no orders yet. Add products to your cart in the Catalogue.</p>'}<p class="meta">Status refreshes every 30 seconds.</p>`);
  $('#app').onclick=e=>{const q=e.target.dataset.q,f=e.target.dataset.f;if(q){S.sup.order=q;go('support')}if(f){S.fbOrder=f;go('fb')}};
@@ -192,7 +202,7 @@ async function orders(){view('<p>Loading your orders...</p>');let last='';const 
 const rdb=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result.split(',')[1]);r.onerror=no;r.readAsDataURL(f)});
 async function shrink(f){if(!/^image\//.test(f.type))return f;try{const b=await createImageBitmap(f),s=Math.min(1,1280/Math.max(b.width,b.height)),c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);
  return await new Promise(ok=>c.toBlob(x=>ok(new File([x],f.name.replace(/\.\w+$/,'')+'.jpg',{type:'image/jpeg'})),'image/jpeg',.72))}catch(e){return f}}
-async function support(){view('<p>Loading...</p>');let d;try{[d,S.orders]=await Promise.all([api('myTickets'),api('myOrders')])}catch(x){return view(`<p class="err">${esc(x.message)}</p>`)}
+async function support(){ld('Loading...');let d;try{[d,S.orders]=await Promise.all([api('myTickets'),api('myOrders')])}catch(x){return view(`<p class="err">${esc(x.message)}</p>`)}
  const U=S.sup,pre=U.order||'';U.order='';
  view(`<form class="panel" id="sf" style="max-width:640px"><h2>Help and support</h2><p class="meta">Tell us what went wrong. Your query goes straight to the right team and you get an email when it is answered.</p>
  <label class="f">What is it about?<select id="sc">${d.cats.map(c=>`<option>${esc(c)}</option>`).join('')}</select></label>
@@ -215,7 +225,7 @@ async function support(){view('<p>Loading...</p>');let d;try{[d,S.orders]=await 
    const r=await api('createTicket',{category:$('#sc').value,orderNumber:$('#so').value,message:$('#sm').value,files:fs});S.supDone=r.ticket;support()}catch(x){$('#sx').innerHTML=`<span class="err">${esc(x.message)}</span>`;b.disabled=false}};
  if(S.supDone){$('#sx').innerHTML=`<span class="ok-t">Sent. Your reference is <b>${esc(S.supDone)}</b>.</span>`;S.supDone=''}}
 /* Feedback: only after delivery; the questions are set by the sales manager */
-async function feedback(){view('<p>Loading...</p>');let Q;try{[S.orders,Q]=await Promise.all([api('myOrders'),api('getQuestions')])}catch(x){return view(`<p class="err">${esc(x.message)}</p>`)}
+async function feedback(){ld('Loading...');let Q;try{[S.orders,Q]=await Promise.all([api('myOrders'),api('getQuestions')])}catch(x){return view(`<p class="err">${esc(x.message)}</p>`)}
  const F=S.fb,done=()=>S.orders.filter(o=>o.status==='Delivered'&&(!o.feedbackDone||F.kind==='product'));
  if(!S.orders.some(o=>o.status==='Delivered'))return view('<section class="panel"><h2>Feedback</h2><p>You can share feedback once an order is delivered. We will email you the link.</p></section>');
  const draw2=()=>{const L=done();if(!L.length)return view('<section class="panel"><h2>Feedback</h2><p>You have already shared feedback for all delivered orders. Thank you!</p></section>');

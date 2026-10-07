@@ -32,6 +32,7 @@ dialog{border:0;border-radius:12px;padding:0;max-width:min(460px,94vw);width:100
 #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:10px;z-index:20}
 #nd{position:fixed;right:0;top:0;bottom:0;width:min(400px,100%);background:#fff;padding:16px;box-shadow:-8px 0 30px #0005;overflow:auto;z-index:9;display:none;gap:8px;align-content:start}#nd.open{display:grid}
 .nt{border-bottom:1px solid var(--line);padding:8px 0;cursor:pointer}.nt.u{background:#fffbe9}
+.ld{display:flex;gap:12px;align-items:center;padding:30px 8px;color:var(--mute)}.sp{flex:none;width:22px;height:22px;border:3px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:700px){.brand h1{font-size:26px}.bar{grid-template-columns:1fr}.trk{font-size:11px;gap:3px}.bars div{grid-template-columns:110px 1fr 36px}th,td{padding:5px 4px}}
 </style></head><body>
 <header><div class="hd"><div class="brand"><h1>GTF Treads<small>Staff dashboard</small></h1></div><span class="who" id="who"></span><button class="btn s y" id="bell" hidden aria-label="Notifications">Alerts <span class="dot" id="bn">0</span></button><button class="btn s y" id="out" hidden>Sign out</button></div></header>
@@ -44,8 +45,11 @@ const dshort=s=>s?new Date(/^\d{4}-\d\d-\d\d$/.test(s)?s+'T00:00:00':s).toLocale
 const dtime=s=>s?new Date(s).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}):'';
 const age=s=>{const h=(Date.now()-new Date(s))/36e5;return h<1?'just now':h<48?Math.round(h)+' h ago':Math.round(h/24)+' days ago'};
 const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-async function api(a,p={}){let r,j;try{r=await fetch('/.netlify/functions/api',{method:'POST',body:JSON.stringify({action:a,token:S.tok,...p})});j=await r.json()}catch(e){throw new Error('Could not reach the server. Check your internet and try again.')}
- if(!j.ok){if(/Session expired|access is not active/.test(j.error))setTimeout(()=>login(j.error,1),0);throw new Error(j.error)}return j.data}
+const READ=/^(staffConfig|staffMe|staffBadge|staffOrders|staffTickets|staffStock|notifList|scoreboard|deptList|getQuestions)$/;
+async function api(a,p={}){for(let t=0;;t++){let j;try{const c=new AbortController(),to=setTimeout(()=>c.abort(),40000);const r=await fetch('/.netlify/functions/api',{method:'POST',body:JSON.stringify({action:a,token:S.tok,...p}),signal:c.signal});clearTimeout(to);j=await r.json()}
+ catch(e){if(t<1&&READ.test(a))continue;throw new Error('The server did not respond. Please check your internet and try again.')}
+ if(!j.ok){if(t<1&&READ.test(a)&&/web page|unreachable/.test(j.error))continue;if(/Session expired|access is not active/.test(j.error))setTimeout(()=>login(j.error,1),0);throw new Error(j.error)}return j.data}}
+const ldh=t=>'<div class="ld"><span class="sp"></span><span id="ldm">'+t+'</span></div>',slow=()=>setTimeout(()=>{const e=$('#ldm');if(e)e.textContent+=' The server is taking longer than usual, please wait...'},7000);
 function toast(t,bad){const e=$('#toast');e.textContent=t;e.style.background=bad?'#a3231a':'#1a1a1a';e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,3500)}
 function ask(title,fields,ok){return new Promise(res=>{const d=$('#dlg');d.innerHTML=`<form method="dialog" class="dl"><h3>${esc(title)}</h3>${fields.map(f=>`<label class="f">${esc(f.l)}${f.t==='textarea'?`<textarea name="${f.n}" rows="3" maxlength="500" ${f.req?'required':''}></textarea>`:f.t==='select'?`<select name="${f.n}">${f.o.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`:`<input name="${f.n}" type="${f.t||'text'}" ${f.min?`min="${f.min}"`:''} ${f.v?`value="${esc(f.v)}"`:''} ${f.req?'required':''}>`}</label>`).join('')}
  <div class="row"><button class="btn s y" value="x" formnovalidate>Cancel</button><button class="btn s" value="ok">${esc(ok||'Save')}</button></div></form>`;
@@ -53,16 +57,16 @@ function ask(title,fields,ok){return new Promise(res=>{const d=$('#dlg');d.inner
 
 /* ---- sign in ---- */
 let pend='';
-async function login(msg='',expired){clearInterval(S.poll);S.tok='';S.me=null;localStorage.removeItem('gtfSt');$('#bell').hidden=$('#out').hidden=true;$('#who').textContent='';
- try{S.cfg=await api('staffConfig')}catch(e){S.cfg={}}
+async function login(msg='',expired){clearInterval(S.poll);S.tok='';S.me=null;localStorage.removeItem('gtfSt');localStorage.removeItem('gtfStMe');$('#bell').hidden=$('#out').hidden=true;$('#who').textContent='';
  view(`<form class="panel auth" id="lf"><h2>${pend?'Enter your code':'Staff sign in'}</h2>${pend?`<p class="meta">We sent a 6-digit code to ${esc(pend)}.</p><input name="code" inputmode="numeric" maxlength="6" placeholder="6-digit code" aria-label="6-digit code" required autofocus>`:`<input name="email" type="email" placeholder="Your work email" aria-label="Work email" required autofocus>`}
- <button class="btn">${pend?'Verify and continue':'Send code'}</button>${pend?'<a href="#" id="bk">Use a different email</a>':''}<div class="err" role="alert">${esc(msg)}</div>${!pend&&S.cfg.googleClientId?'<div id="gbtn"></div>':''}</form>`);
+ <button class="btn">${pend?'Verify and continue':'Send code'}</button>${pend?'<a href="#" id="bk">Use a different email</a>':''}<div class="err" role="alert">${esc(msg)}</div></form>`);
  $('#bk')&&($('#bk').onclick=e=>{e.preventDefault();pend='';login()});
- $('#lf').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));try{if(pend){const d=await api('staffVerifyOtp',{email:pend,code:f.code});pend='';enter(d)}else{await api('staffRequestOtp',{email:f.email});pend=f.email;login()}}catch(x){login(x.message)}};
- if(!pend&&S.cfg.googleClientId){const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=()=>{google.accounts.id.initialize({client_id:S.cfg.googleClientId,callback:async r=>{try{enter(await api('staffGoogleLogin',{credential:r.credential}))}catch(x){login(x.message)}}});google.accounts.id.renderButton($('#gbtn'),{theme:'outline',size:'large'})};document.head.appendChild(s)}}
-function enter(d){S.tok=d.token;S.me=d.me;localStorage.gtfSt=d.token;$('#bell').hidden=$('#out').hidden=false;$('#who').textContent=d.me.name+' ('+d.me.dept+')';
+ $('#lf').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target)),bt=e.target.querySelector('.btn'),em=e.target.querySelector('.err');bt.disabled=true;bt.textContent='Please wait...';em.style.color='#586271';em.textContent=pend?'Checking your code...':'Sending your code. This can take up to 10 seconds, please do not press again.';
+  try{if(pend){const d=await api('staffVerifyOtp',{email:pend,code:f.code});pend='';enter(d)}else{await api('staffRequestOtp',{email:f.email});pend=f.email;login()}}catch(x){login(x.message)}};
+ if(!pend)api('staffConfig').then(c=>{S.cfg=c;if(!pend&&c.googleClientId&&$('#lf')&&!$('#gbtn')){$('#lf').insertAdjacentHTML('beforeend','<div id="gbtn"></div>');const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.onload=()=>{google.accounts.id.initialize({client_id:c.googleClientId,callback:async r=>{try{enter(await api('staffGoogleLogin',{credential:r.credential}))}catch(x){login(x.message)}}});google.accounts.id.renderButton($('#gbtn'),{theme:'outline',size:'large'})};document.head.appendChild(s)}}).catch(()=>{})}
+function enter(d){S.tok=d.token;S.me=d.me;localStorage.gtfSt=d.token;localStorage.gtfStMe=JSON.stringify(d.me);$('#bell').hidden=$('#out').hidden=false;$('#who').textContent=d.me.name+' ('+d.me.dept+')';
  const q=new URLSearchParams(location.search);S.tab=d.me.tabs.includes('orders')?'orders':d.me.tabs[0];S.f.o='mine';if(q.get('order')){S.f.o='all';S.f.q=q.get('order')}history.replaceState(null,'',location.pathname);
- clearInterval(S.poll);S.poll=setInterval(badge,45e3);shell()}
+ clearInterval(S.poll);S.poll=setInterval(badge,9e4);shell()}
 $('#out').onclick=()=>{pend='';login()};$('#bell').onclick=notifs;
 const TABS={orders:'Orders',tickets:'Tickets',stock:'Stock',score:'Scoreboard',questions:'Survey questions',team:'Team'};
 function shell(){view(`<nav class="tabs" id="tb">${S.me.tabs.map(t=>`<button class="btn s ${t===S.tab?'on':''}" data-t="${t}">${TABS[t]}<span class="dot" id="b-${t}" hidden></span></button>`).join('')}<button class="btn s y" data-t="refresh">Refresh</button></nav><div id="pane"></div>`);
@@ -70,11 +74,11 @@ function shell(){view(`<nav class="tabs" id="tb">${S.me.tabs.map(t=>`<button cla
 async function badge(){try{const b=await api('staffBadge'),was=S.unread;S.unread=b.unread;$('#bn').textContent=b.unread;$('#bell').classList.toggle('on',b.unread>0);
  [['orders',b.todo],['tickets',b.tickets]].forEach(([t,n])=>{const e=$('#b-'+t);if(e){e.hidden=!n;e.textContent=n}});
  if(b.unread>was&&['orders','tickets'].includes(S.tab)&&!$('#dlg').open)tab(1)}catch(e){}}
-async function notifs(){const n=$('#nd');if(n.classList.contains('open'))return n.classList.remove('open');n.classList.add('open');n.innerHTML='<p>Loading...</p>';
+async function notifs(){const n=$('#nd');if(n.classList.contains('open'))return n.classList.remove('open');n.classList.add('open');n.innerHTML=ldh('Loading...');
  try{const L=await api('notifList');n.innerHTML=`<div class="row sp"><h3>Alerts</h3><button class="btn s y" id="nx">Close</button></div>${L.map(x=>`<div class="nt ${x.read?'':'u'}" data-r="${esc(x.ref)}"><b>${esc(x.title)}</b><div>${esc(x.msg)}</div><div class="meta">${esc(x.dept)} &middot; ${dtime(x.t)}</div></div>`).join('')||'<p class="meta">No alerts yet.</p>'}`;
   $('#nx').onclick=()=>n.classList.remove('open');n.onclick=e=>{const r=e.target.closest('[data-r]')?.dataset.r;if(!r)return;n.classList.remove('open');if(/^T\d/.test(r)&&S.me.tabs.includes('tickets')){S.tab='tickets';S.f.t='All';S.f.q=r}else if(S.me.tabs.includes('orders')){S.tab='orders';S.f.o='all';S.f.q=r}S.hl=r;shell()};
   await api('notifRead');S.unread=0;$('#bn').textContent=0}catch(x){n.innerHTML=`<p class="err">${esc(x.message)}</p>`}}
-async function tab(quiet){const p=$('#pane');if(!p)return;if(!quiet)p.innerHTML='<p>Loading...</p>';try{await({orders,tickets,stock,score,questions,team}[S.tab])()}catch(x){p.innerHTML=`<p class="err">${esc(x.message)}</p>`}}
+async function tab(quiet){const p=$('#pane');if(!p)return;if(!quiet){p.innerHTML=ldh('Loading...');slow()}try{await({orders,tickets,stock,score,questions,team}[S.tab])()}catch(x){p.innerHTML=`<p class="err">${esc(x.message)}</p>`}}
 
 /* ---- orders ---- */
 const STEPS=['Placed','Sales reviewed','Accounts approved','Scheduled','Dispatched'],ACT=a=>!['locked','replan'].includes(a);
@@ -152,5 +156,7 @@ async function team(){let d=await api('deptList');const draw=()=>{$('#pane').inn
  const form=async s=>{s=s||{dept:'Sales',name:'',email:'',phone:'',wa:'',admin:false,active:true};const r=await ask(s.email?'Edit '+s.name:'Add team member',[{n:'name',l:'Name',v:s.name,req:1},{n:'email',l:'Work email',t:'email',v:s.email,req:1},{n:'dept',l:'Department',t:'select',o:[s.dept,...d.depts.filter(x=>x!==s.dept),'Management'].filter((x,i,a)=>x&&a.indexOf(x)===i)},{n:'phone',l:'Phone',v:s.phone},{n:'wa',l:'WhatsApp (optional)',v:s.wa},{n:'access',l:'Access',t:'select',o:s.admin?['Admin','Member']:['Member','Admin']},{n:'active',l:'Active',t:'select',o:s.active?['Yes','No']:['No','Yes']}],'Save');
   if(!r)return;try{await api('deptUpsert',{name:r.name,email:r.email,dept:r.dept,phone:r.phone,wa:r.wa,admin:r.access==='Admin',active:r.active==='Yes'});toast('Saved');d=await api('deptList');draw()}catch(x){toast(x.message,1)}};
  $('#tn').onclick=()=>form();$('#pane').onclick=async e=>{const em=e.target.dataset.e,rm=e.target.dataset.r;if(em)form(d.staff.find(s=>s.email===em));if(rm&&confirm('Remove '+rm+' from the team?'))try{await api('deptRemove',{email:rm});toast('Removed');d=await api('deptList');draw()}catch(x){toast(x.message,1)}}};draw()}
-S.tok?api('staffMe').then(me=>enter({token:S.tok,me})).catch(()=>login()):login();
+if(S.tok){let me=null;try{me=JSON.parse(localStorage.gtfStMe||'null')}catch(e){}
+ if(me){enter({token:S.tok,me});api('staffMe').then(m=>{localStorage.gtfStMe=JSON.stringify(m);if(JSON.stringify(m.tabs)!==JSON.stringify(S.me.tabs)){S.me=m;shell()}}).catch(()=>{})}
+ else api('staffMe').then(me=>enter({token:S.tok,me})).catch(()=>login())}else login();
 </script></body></html>
